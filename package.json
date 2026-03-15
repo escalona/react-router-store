@@ -4,12 +4,14 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
-    "cf-typegen": "wrangler types",
+    "cf-typegen": "WRANGLER_LOG=none wrangler types --strict-vars=false",
     "deploy": "pnpm run build && wrangler deploy",
     "dev": "react-router dev",
     "postinstall": "npm run cf-typegen",
     "preview": "pnpm run build && vite preview",
-    "typecheck": "npm run cf-typegen && react-router typegen && tsc -b",
+    "test": "vitest run --reporter=agent",
+    "test:watch": "vitest",
+    "typecheck": "pnpm run cf-typegen && react-router typegen && tsc -b",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "fmt": "oxfmt --write .",
@@ -19,21 +21,26 @@
     "isbot": "^5.1.31",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router": "^7.10.0"
+    "react-router": "^7.10.0",
+    "stripe": "^20.4.1"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.13.5",
     "@react-router/dev": "^7.10.0",
     "@tailwindcss/vite": "^4.1.13",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^22.19.15",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
+    "jsdom": "^29.0.0",
     "oxfmt": "^0.40.0",
     "oxlint": "^1.55.0",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",
     "vite": "^7.1.7",
     "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.1.0",
     "wrangler": "^4.73.0"
   }
 }
