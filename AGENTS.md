@@ -18,6 +18,21 @@
 `pnpm lint` / `pnpm lint:fix` run `oxlint`.
 `pnpm fmt` / `pnpm fmt:check` format or verify formatting with `oxfmt`.
 
+## Policies & Mandatory Rules
+
+### Mandatory Skill Usage
+
+#### `$code-change-verification`
+
+Run `$code-change-verification` before marking work complete when changes affect runtime code, tests, or build/test behavior.
+
+Run it when you change:
+
+- `app/`, `workers/`, or `public/`
+- Root build/test config such as `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `tsconfig*.json`, `eslint.config.*`, or `vitest*.ts`
+
+You can skip `$code-change-verification` for docs-only or repo-meta changes (for example, `docs/`, `.agents/`, `README.md`, `AGENTS.md`, `.github/`), unless a user explicitly asks to run the full verification stack.
+
 ## Coding Style & Naming Conventions
 
 Write TypeScript and TSX using the repo’s existing style: formatter-managed spacing, two-space indentation, double quotes, and concise functions. Name route files in kebab-case (`checkout-success.tsx`), React components in PascalCase, and server-only modules with a `.server.ts` suffix. Prefer small helpers in `app/lib/` and keep product/content definitions centralized in `app/data/`.
