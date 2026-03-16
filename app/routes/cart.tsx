@@ -1,8 +1,11 @@
-import { Link, redirect } from "react-router";
+import { Link, redirect, useSubmit } from "react-router";
 import type { Route } from "./+types/cart";
 import { getProductById } from "~/data/products";
 import { formatPrice } from "~/lib/format";
 import { parseCart, removeFromCart, updateQuantity, serializeCart } from "~/lib/cart.server";
+import { Button } from "~/components/button";
+import { StyledSelect } from "~/components/select";
+import { StyledAlertDialog } from "~/components/alert-dialog";
 
 export function meta() {
   return [{ title: "Cart" }];
@@ -58,8 +61,14 @@ export async function action({ request }: Route.ActionArgs) {
   });
 }
 
+const quantityOptions = Array.from({ length: 10 }, (_, i) => ({
+  value: String(i + 1),
+  label: String(i + 1),
+}));
+
 export default function Cart({ loaderData }: Route.ComponentProps) {
   const { items, total, stripeConfigured } = loaderData;
+  const submit = useSubmit();
 
   if (items.length === 0) {
     return (
@@ -108,37 +117,40 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
               </div>
 
               <div className="flex items-center gap-4">
-                <form method="post" className="flex items-center gap-2">
-                  <input type="hidden" name="intent" value="update" />
-                  <input type="hidden" name="productId" value={item.productId} />
-                  <label className="sr-only" htmlFor={`qty-${item.productId}`}>
-                    Quantity
-                  </label>
-                  <select
-                    id={`qty-${item.productId}`}
-                    name="quantity"
-                    defaultValue={item.quantity}
-                    onChange={(e) => e.currentTarget.form?.requestSubmit()}
-                    className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
-                  >
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                      <option key={n} value={n}>
-                        {n}
-                      </option>
-                    ))}
-                  </select>
-                </form>
+                <StyledSelect
+                  options={quantityOptions}
+                  defaultValue={String(item.quantity)}
+                  id={`qty-${item.productId}`}
+                  onValueChange={(quantity) => {
+                    if (!quantity) return;
+                    const formData = new FormData();
+                    formData.set("intent", "update");
+                    formData.set("productId", item.productId);
+                    formData.set("quantity", quantity);
+                    submit(formData, { method: "post" });
+                  }}
+                />
 
-                <form method="post">
-                  <input type="hidden" name="intent" value="remove" />
-                  <input type="hidden" name="productId" value={item.productId} />
-                  <button
-                    type="submit"
-                    className="text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                  >
-                    Remove
-                  </button>
-                </form>
+                <StyledAlertDialog
+                  trigger={
+                    <button
+                      type="button"
+                      className="text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                    >
+                      Remove
+                    </button>
+                  }
+                  title="Remove item"
+                  description={`Remove "${item.name}" from your cart?`}
+                  confirmLabel="Remove"
+                  cancelLabel="Keep"
+                  onConfirm={() => {
+                    const formData = new FormData();
+                    formData.set("intent", "remove");
+                    formData.set("productId", item.productId);
+                    submit(formData, { method: "post" });
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -153,13 +165,9 @@ export default function Cart({ loaderData }: Route.ComponentProps) {
       </div>
 
       <form method="post" action="/checkout" className="mt-6">
-        <button
-          type="submit"
-          disabled={!stripeConfigured}
-          className="w-full rounded-lg bg-gray-900 px-6 py-3 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-        >
+        <Button type="submit" size="lg" disabled={!stripeConfigured} className="w-full">
           Checkout
-        </button>
+        </Button>
         {!stripeConfigured && (
           <p className="mt-2 text-center text-sm text-amber-600 dark:text-amber-400">
             Checkout is unavailable. Add your STRIPE_SECRET_KEY to .dev.vars to enable it.

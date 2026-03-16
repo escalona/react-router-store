@@ -14,3 +14,12 @@ body {
     color-scheme: dark;
   }
 }
+
+body {
+  position: relative;
+}
+
+/* Base UI portal isolation */
+.root-layout {
+  isolation: isolate;
+}

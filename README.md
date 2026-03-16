@@ -10,7 +10,7 @@ This repo is a focused example app rather than a full commerce platform. The cat
 - Product listing and product detail pages
 - Cookie-backed cart with add, update, and remove actions
 - Stripe Checkout session creation on the server
-- Tailwind CSS 4 styling
+- Base UI component library with Tailwind CSS 4 styling
 
 ## Stack
 
@@ -18,6 +18,7 @@ This repo is a focused example app rather than a full commerce platform. The cat
 - React Router 7
 - Cloudflare Workers via Wrangler
 - Stripe
+- Base UI (`@base-ui/react`)
 - Tailwind CSS 4
 - TypeScript
 
@@ -76,6 +77,7 @@ The app runs at `http://localhost:5173`.
 
 - `app/routes.ts` defines the storefront routes
 - `app/routes/store-layout.tsx` renders the shared shell and cart count
+- `app/components/` contains Base UI component wrappers (see below)
 - `app/data/products.ts` contains the static product catalog
 - `app/lib/cart.server.ts` parses and serializes the cart cookie
 - `app/test/setup.ts` configures shared Vitest and Testing Library behavior
@@ -83,6 +85,15 @@ The app runs at `http://localhost:5173`.
 - `app/lib/stripe.server.ts` creates the Stripe client and checkout session
 - `workers/app.ts` is the Cloudflare Worker entry point
 - `.dev.vars.example` shows the local env shape
+
+## Base UI Components
+
+The project uses [Base UI](https://base-ui.com) (`@base-ui/react`) for accessible, unstyled component primitives, styled with Tailwind CSS. Components live in `app/components/` and come in two flavors:
+
+**Styled wrappers** — opinionated, drop-in components with Tailwind classes baked in.
+**Raw Base UI primitives** — re-exported from each component file (e.g. `Select`, `Dialog`) for when you need full control over markup and styling. Import from `~/components/select`, etc.
+
+All components use Base UI's data attributes for state (e.g. `data-checked`, `data-disabled`, `data-highlighted`) and Tailwind's `data-*:` variant shorthand for styling them.
 
 ## Testing
 

@@ -2,6 +2,7 @@ import { data, Link, redirect } from "react-router";
 import type { Route } from "./+types/checkout-success";
 import { clearCart } from "~/lib/cart.server";
 import { createStripeClient } from "~/lib/stripe.server";
+import { Button } from "~/components/button";
 
 export function meta() {
   return [{ title: "Order Confirmed" }];
@@ -36,12 +37,9 @@ export default function CheckoutSuccess() {
       <p className="mt-4 text-gray-600 dark:text-gray-400">
         Your payment was successful. We&apos;ll send you a confirmation email shortly.
       </p>
-      <Link
-        to="/"
-        className="mt-8 inline-block rounded-lg bg-gray-900 px-6 py-3 text-sm font-medium text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-      >
+      <Button render={<Link to="/" />} size="lg" className="mt-8">
         Continue Shopping
-      </Link>
+      </Button>
     </div>
   );
 }

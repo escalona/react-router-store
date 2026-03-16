@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-`app/` contains the React Router storefront. Use `app/routes.ts` for route registration and add route modules under `app/routes/` (for example, `store-layout.tsx`, `checkout.tsx`, `checkout-success.tsx`). Keep static catalog data in `app/data/`, shared helpers in `app/lib/`, and server-only code in `*.server.ts` files such as `app/lib/cart.server.ts`. Global styles live in `app/app.css`, the Worker entrypoint is `workers/app.ts`, and static assets belong in `public/`. Copy `.dev.vars.example` when setting up local secrets.
+`app/` contains the React Router storefront. Use `app/routes.ts` for route registration and add route modules under `app/routes/` (for example, `store-layout.tsx`, `checkout.tsx`, `checkout-success.tsx`). Keep static catalog data in `app/data/`, shared helpers in `app/lib/`, reusable UI components in `app/components/`, and server-only code in `*.server.ts` files such as `app/lib/cart.server.ts`. Global styles live in `app/app.css`, the Worker entrypoint is `workers/app.ts`, and static assets belong in `public/`. Copy `.dev.vars.example` when setting up local secrets.
 
 ## Build, Test, and Development Commands
 
@@ -32,6 +32,16 @@ Run it when you change:
 - Root build/test config such as `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `tsconfig*.json`, `eslint.config.*`, or `vitest*.ts`
 
 You can skip `$code-change-verification` for docs-only or repo-meta changes (for example, `docs/`, `.agents/`, `README.md`, `AGENTS.md`, `.github/`), unless a user explicitly asks to run the full verification stack.
+
+## Base UI Components
+
+The project uses [Base UI](https://base-ui.com) (`@base-ui/react`) for accessible, unstyled primitives styled with Tailwind CSS. Components live in `app/components/` and each file exports both a styled wrapper (e.g. `StyledSelect`) and the raw Base UI namespace (e.g. `Select`). The barrel export is `app/components/index.ts`.
+
+When building new UI, prefer Base UI primitives over raw HTML for interactive elements (buttons, dialogs, selects, tooltips, etc.) to get built-in accessibility, keyboard navigation, and focus management. Use the styled wrappers for standard cases and the raw primitives when you need full control over markup.
+
+Style Base UI component states using Tailwind’s `data-*:` variant shorthand (e.g. `data-checked:bg-gray-900`, `data-disabled:opacity-50`). Use bracket syntax only for hyphenated attributes like `data-[starting-style]:` or `data-[popup-open]:`.
+
+The root layout wraps content in a `div.root-layout` with `isolation: isolate` so Base UI portals (dialogs, selects, popovers, tooltips) render above page content.
 
 ## Coding Style & Naming Conventions
 

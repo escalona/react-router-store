@@ -3,6 +3,7 @@ import type { Route } from "./+types/product";
 import { getProductByHandle } from "~/data/products";
 import { formatPrice } from "~/lib/format";
 import { parseCart, addToCart, serializeCart } from "~/lib/cart.server";
+import { Button } from "~/components/button";
 
 export function loader({ params }: Route.LoaderArgs) {
   const product = getProductByHandle(params.handle);
@@ -51,12 +52,9 @@ export default function Product({ loaderData }: Route.ComponentProps) {
         </p>
 
         <form method="post">
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-gray-900 px-6 py-3 text-sm font-medium text-white hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200"
-          >
+          <Button type="submit" size="lg" className="w-full">
             Add to Cart
-          </button>
+          </Button>
         </form>
       </div>
     </div>
